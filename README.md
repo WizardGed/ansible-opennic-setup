@@ -1,42 +1,152 @@
-# Archived Project
-I no longer maintain a Tier 2 Resolver for OpenNIC and no longer maintain this repository. Please feel free to fork and make updated version for people to use.
-
 # OpenNIC Setup with Ansible
-This is a simple Ansible Script to use to setup an OpenNIC server with Ansible. It
-currently supports CentOS 7, Fedora 28 through 33, and Ubuntu 18.04 LTS. I do plan to add Debian and Ubuntu 20.04 support in the
-future. It is also an open project, so feel free to fork and make your own changes.
-I also welcome feedback.
 
-# How To Use
-On your local machine(or your Ansible host), and update your /etc/ansible/hosts like below updating with the IP Addresses of your servers:
+This Ansible playbook automates the setup of an OpenNIC Tier 2 DNS resolver on various Linux distributions. It supports multiple DNS server implementations and provides production-ready configurations.
+
+## Supported Distributions
+
+- Debian
+- Ubuntu
+- RHEL-based (Red Hat Enterprise Linux, Rocky Linux, AlmaLinux, Oracle Linux)
+- Fedora
+
+## Supported DNS Servers
+
+- BIND (default)
+- djbdns (planned)
+- Untangle (planned)
+- Trust-DNS (planned)
+
+## Features
+
+### Core Functionality
+- Installs and configures DNS server
+- Sets up OpenNIC zone slaves for alternative TLDs
+- Configures firewall rules for DNS (port 53)
+- Enables production-ready OS adjustments (NTP, logging, etc.)
+
+### Modern DNS Features (configurable)
+- DNSSEC validation
+- DNS-over-HTTPS (DoH) - planned
+- DNS-over-TLS (DoT) - planned
+- DNSSEC signing - planned
+- Rate limiting - planned
+- Query logging - planned
+
+### Maintenance
+- Zone file updates
+- Service restarts
+- Health checks
+- Log rotation
+- Config backups
+- OS updates
+
+## Feature Matrix
+
+| Feature | BIND | djbdns | Untangle | Trust-DNS |
+|---------|------|--------|----------|-----------|
+| Basic Setup | ✅ | ❌ | ❌ | ❌ |
+| DNSSEC Validation | ✅ | ❌ | ❌ | ❌ |
+| DoH | ❌ | ❌ | ❌ | ❌ |
+| DoT | ❌ | ❌ | ❌ | ❌ |
+| Maintenance Tasks | ✅ | ❌ | ❌ | ❌ |
+
+## Quick Start
+
+1. Clone this repository
+2. Update your `/etc/ansible/hosts` or create a custom inventory:
+   ```
+   [opennic]
+   server1.example.com
+   server2.example.com
+   ```
+3. Run the playbook:
+   ```
+   ansible-playbook site.yml
+   ```
+
+## Configuration
+
+### Variables
+
+Set variables in your playbook or inventory:
+
+```yaml
+# Choose DNS server
+dns_server: bind  # Options: bind, djbdns, untangle, trust_dns
+
+# DNSSEC settings
+dnssec_validation: auto
+
+# Enable features
+enable_doh: false
+enable_dot: false
+enable_dnssec_signing: false
+enable_rate_limiting: false
+enable_query_logging: false
+
+# OpenNIC master servers (update as needed)
+opennic_masters:
+  - 161.97.219.84
+  - 2001:470:4212:10:0:100:53:10
+  # ... more IPs
 ```
+
+### Custom Inventory
+
+Create a `hosts` file in the project directory:
+
+```ini
 [opennic]
-xxx.xxx.xxx.xxx
-xxx.xxx.xxx.xxx
+server1 ansible_host=192.168.1.10
+
+[opennic:vars]
+dns_server=bind
+enable_dnssec_signing=true
 ```
-Once you have added the hosts to your ansible hosts file, run the following command in the directory you have dropped this playbook:
+
+## Maintenance
+
+Run maintenance tasks:
+
+```bash
+ansible-playbook site.yml --tags maintenance
 ```
-ansible-playbook opennic-setup.yml
-```
 
-# Notes For Each OS
+## Development
 
-## CentOS 7
-* Installs and configures Firewalld
-* Installs and configures Named
-* Configures SELinux to allow Named without turning off SELinux
+### Adding New Distributions
 
-## Fedora 28
-* **NOTE:** Make sure in your hosts file to add your Fedora servers like so "xxx.xxx.xxx.xxx ansible_python_interpreter=/usr/bin/python3"
-* Installs and configures Firewalld
-* Installs and configures Named
-* Configures SELinux to allow Named without turning off SELinux
+1. Create a new role: `ansible-galaxy role init roles/newdistro`
+2. Implement OS-specific setup in `roles/newdistro/tasks/main.yml`
+3. Update `site.yml` with the new role condition
+4. Test on the target distribution
 
-## Ubuntu 18.04 LTS
-* **NOTE:** Python must be installed on your server for this to work _sudo apt-get install python_
-* Installs and configures Bind9
-* Installs and sets UFW to allow SSH and Port 53 (doesn't do any other changes)
+### Adding New DNS Servers
 
-## To-Do
-* Debian Support
-* Ubuntu 20.04 LTS Support
+1. Create DNS server role: `ansible-galaxy role init roles/newdns`
+2. Implement installation and configuration
+3. Add feature support as needed
+4. Update feature matrix in README
+5. Add to `dns_server` options
+
+## Requirements
+
+- Ansible 2.9+
+- Target servers with SSH access
+- Python on target servers (for Ansible)
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+Apache 2.0
+
+## Disclaimer
+
+This playbook sets up a public DNS resolver. Ensure proper security measures are in place, especially for internet-facing servers.

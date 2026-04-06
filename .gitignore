@@ -1,1 +1,21 @@
 *.retry
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+
+# Secrets (if any)
+secrets.yml
+vault_pass.txt
+
+# Test files
+test_*.yml
