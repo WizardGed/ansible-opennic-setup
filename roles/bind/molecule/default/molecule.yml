@@ -12,6 +12,5 @@ provisioner:
   config_options:
     defaults:
       allow_broken_conditionals: true
-      roles_path: ../../../
 verifier:
   name: ansible
