@@ -1,48 +1,48 @@
 - name: Update all packages on system
-  apt:
+  ansible.builtin.apt:
     name: '*'
-    state: latest
-    force_apt_get: yes
-    update_cache: yes
+    state: present
+    force_apt_get: true
+    update_cache: true
 
 - name: Install basic packages for production readiness
-  apt:
+  ansible.builtin.apt:
     name:
       - ntp
       - logrotate
       - ufw
-    state: latest
-    force_apt_get: yes
+    state: present
+    force_apt_get: true
 
 - name: Enable and start NTP
-  systemd:
+  ansible.builtin.systemd:
     name: ntp
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Enable and start ufw
-  systemd:
+  ansible.builtin.systemd:
     name: ufw
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Ensure SSH is allowed
-  ufw:
+  community.general.ufw:
     rule: allow
     name: OpenSSH
 
 - name: Update ufw to allow DNS TCP requests
-  ufw:
+  community.general.ufw:
     rule: allow
     port: '53'
     proto: tcp
 
 - name: Update ufw to allow DNS UDP requests
-  ufw:
+  community.general.ufw:
     rule: allow
     port: '53'
     proto: udp
 
 - name: Reload ufw
-  ufw:
+  community.general.ufw:
     state: reloaded

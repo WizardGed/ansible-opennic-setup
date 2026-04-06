@@ -16,12 +16,12 @@ stores = [{ type = "recursor", recursor = "recursor" }]
 [listen_addrs]
 addr = "0.0.0.0:53"
 proto = "udp"
-{% if enable_dot %}
-addr = "0.0.0.0:{{ dot_port }}"
+{% if trust_dns_enable_dot %}
+addr = "0.0.0.0:{{ trust_dns_dot_port }}"
 proto = "tls"
 {% endif %}
 
-{% if minimal_logging %}
+{% if trust_dns_minimal_logging %}
 [log]
 level = "error"
 {% else %}

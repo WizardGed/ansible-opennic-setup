@@ -1,62 +1,62 @@
-#SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: Apache-2.0
 - name: Install BIND
-  package:
+  ansible.builtin.package:
     name: "{{ bind_package }}"
-    state: latest
+    state: present
 
 - name: Enable and start BIND service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ bind_service }}"
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Create BIND config directory if needed
-  file:
+  ansible.builtin.file:
     path: "{{ bind_config_dir }}"
     state: directory
     owner: "{{ bind_user }}"
     group: "{{ bind_group }}"
-    mode: 0755
+    mode: "0755"
 
 - name: Deploy BIND main config (Debian)
-  template:
+  ansible.builtin.template:
     src: named.conf.debian.j2
     dest: "{{ bind_main_config }}"
-    backup: yes
+    backup: true
     owner: "{{ bind_user }}"
     group: "{{ bind_group }}"
-    mode: 0644
+    mode: "0644"
   when: ansible_os_family == 'Debian'
   notify: restart bind
 
 - name: Deploy BIND main config (RedHat)
-  template:
+  ansible.builtin.template:
     src: named.conf.redhat.j2
     dest: "{{ bind_main_config }}"
-    backup: yes
+    backup: true
     owner: "{{ bind_user }}"
     group: "{{ bind_group }}"
-    mode: 0644
+    mode: "0644"
   when: ansible_os_family == 'RedHat'
   notify: restart bind
 
 - name: Deploy OpenNIC zones config
-  template:
+  ansible.builtin.template:
     src: named.conf.opennic.j2
     dest: "{{ bind_opennic_config }}"
-    backup: yes
+    backup: true
     owner: "{{ bind_user }}"
     group: "{{ bind_group }}"
-    mode: 0644
+    mode: "0644"
   notify: restart bind
 
 - name: Set SELinux booleans for BIND (RedHat family)
   seboolean:
     name: "{{ item }}"
-    state: yes
-    persistent: yes
+    state: true
+    persistent: true
   loop:
     - named_tcp_bind_http_port
     - named_write_master_zones
   when: ansible_os_family == 'RedHat'
-# tasks file for bind
+#  tasks file for bind

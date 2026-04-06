@@ -11,9 +11,9 @@
 
   # Roles for different OS and DNS server
   roles:
-  - { role: debian, when: ansible_distribution == "Debian" }
-  # - { role: ubuntu, when: ansible_distribution == "Ubuntu" }  # TODO: Implement after Debian/RHEL
-  - { role: rhel, when: ansible_os_family == "RedHat" }
-  # - { role: fedora, when: ansible_distribution == "Fedora" }  # TODO: Implement after Debian/RHEL
-  - { role: "{{ dns_server }}" }
-  - { role: maintenance }
+    - { role: debian, when: ansible_distribution == "Debian" }
+    # - { role: ubuntu, when: ansible_distribution == "Ubuntu" }  # TODO: Implement after Debian/RHEL
+    - { role: rhel, when: ansible_os_family == "RedHat" }
+    # - { role: fedora, when: ansible_distribution == "Fedora" }  # TODO: Implement after Debian/RHEL
+    - { role: "{{ dns_server }}" }
+    - { role: maintenance }

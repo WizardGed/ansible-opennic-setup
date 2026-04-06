@@ -1,46 +1,55 @@
-#SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: Apache-2.0
+- name: Download Rust installer
+  ansible.builtin.get_uri:
+    url: https://sh.rustup.rs
+    dest: /tmp/rustup.sh
+    mode: '0755'
+  when: ansible_os_family == 'Debian'
+
 - name: Install Rust
-  shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  ansible.builtin.shell: |
+    set -o pipefail
+    /tmp/rustup.sh -y
   args:
     creates: ~/.cargo/bin/rustc
   when: ansible_os_family == 'Debian'
 
 - name: Add Rust to PATH
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: ~/.bashrc
     line: 'export PATH="$HOME/.cargo/bin:$PATH"'
   when: ansible_os_family == 'Debian'
 
 - name: Install trust-dns-server
-  command: ~/.cargo/bin/cargo install trust-dns-server
+  ansible.builtin.command: ~/.cargo/bin/cargo install trust-dns-server
   args:
     creates: ~/.cargo/bin/trust-dns-server
   when: ansible_os_family == 'Debian'
 
 - name: Create trust-dns config directory
-  file:
+  ansible.builtin.file:
     path: /etc/trust-dns
     state: directory
-    mode: 0755
+    mode: "0755"
 
 - name: Deploy trust-dns config
-  template:
+  ansible.builtin.template:
     src: server.toml.j2
     dest: /etc/trust-dns/server.toml
-    mode: 0644
+    mode: "0644"
   notify: restart trust_dns
 
 - name: Create systemd service file
-  template:
+  ansible.builtin.template:
     src: trust-dns.service.j2
     dest: /etc/systemd/system/trust-dns.service
-    mode: 0644
+    mode: "0644"
   notify: reload systemd
 
 - name: Enable and start trust-dns
-  systemd:
+  ansible.builtin.systemd:
     name: trust-dns
     state: started
-    enabled: yes
+    enabled: true
   when: ansible_os_family == 'Debian'
-# tasks file for trust_dns
+#  tasks file for trust_dns

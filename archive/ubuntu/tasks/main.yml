@@ -1,21 +1,21 @@
 - name: Update all packages on system
-  apt:
+  ansible.builtin.apt:
     name: '*'
     state: latest
     force_apt_get: yes
     update_cache: yes
 - name: Install bind (named)
-  apt:
+  ansible.builtin.apt:
     name: bind9
     state: latest
     force_apt_get: yes
 - name: Enable start and enable bind
-  systemd:
+  ansible.builtin.systemd:
     name: bind9
     state: started
     enabled: yes
 - name: Enable and start ufw
-  systemd:
+  ansible.builtin.systemd:
     name: ufw
     state: started
     enabled: yes
@@ -31,7 +31,7 @@
   ufw:
     state: reloaded
 - name: Update the bind.conf
-  copy:
+  ansible.builtin.copy:
     src: named.conf
     dest: /etc/named.conf.options
     backup: yes
@@ -39,7 +39,7 @@
     group: bind
     mode: 0644
 - name: Install OpenNIC zones file
-  copy:
+  ansible.builtin.copy:
     src: named.conf.opennic
     dest: /etc/bind/named.conf.default-zones
     backup: yes
@@ -47,6 +47,6 @@
     group: bind
     mode: 0644
 - name: Restart named
-  systemd:
+  ansible.builtin.systemd:
     name: bind9
     state: restarted

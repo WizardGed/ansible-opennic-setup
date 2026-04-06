@@ -1,54 +1,54 @@
 - name: Update all packages on system
-  dnf:
+  ansible.builtin.dnf:
     name: '*'
-    state: latest
+    state: present
 
 - name: Install basic packages for production readiness
-  dnf:
+  ansible.builtin.dnf:
     name:
       - chrony
       - logrotate
       - firewalld
       - python3-firewall
-    state: latest
+    state: present
 
 - name: Install SELinux dependencies
-  dnf:
+  ansible.builtin.dnf:
     name: python3-libsemanage
-    state: latest
+    state: present
   when: ansible_distribution_major_version | int >= 31
 
 - name: Install SELinux dependencies (older versions)
-  dnf:
+  ansible.builtin.dnf:
     name: libsemanage-python
-    state: latest
+    state: present
   when: ansible_distribution_major_version | int <= 30
 
 - name: Enable and start chrony
-  systemd:
+  ansible.builtin.systemd:
     name: chronyd
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Enable and start firewalld
-  systemd:
+  ansible.builtin.systemd:
     name: firewalld
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Update firewalld to allow DNS TCP requests
-  firewalld:
+  ansible.posix.firewalld:
     port: 53/tcp
     permanent: true
     state: enabled
 
 - name: Update firewalld to allow DNS UDP requests
-  firewalld:
+  ansible.posix.firewalld:
     port: 53/udp
     permanent: true
     state: enabled
 
 - name: Reload firewalld
-  systemd:
+  ansible.builtin.systemd:
     name: firewalld
     state: reloaded

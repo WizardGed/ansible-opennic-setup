@@ -1,9 +1,14 @@
-#SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: Apache-2.0
+- name: Set DNS service name
+  ansible.builtin.set_fact:
+    maintenance_dns_service_name: "{{ 'dnscache' if dns_server == 'djbdns' else 'trust-dns' if dns_server == 'trust_dns' else bind_service }}"
+
 - name: Backup BIND configs
-  copy:
+  ansible.builtin.copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}.backup"
-    remote_src: yes
+    remote_src: true
+    mode: "0644"
   loop:
     - src: "{{ bind_main_config }}"
       dest: "{{ bind_main_config }}"
@@ -12,41 +17,45 @@
   when: dns_server == 'bind'
 
 - name: Backup djbdns configs
-  copy:
+  ansible.builtin.copy:
     src: /etc/dnscache/root/servers/@
     dest: /etc/dnscache/root/servers/@.backup
-    remote_src: yes
+    remote_src: true
+    mode: "0644"
   when: dns_server == 'djbdns'
 
 - name: Backup trust-dns configs
-  copy:
+  ansible.builtin.copy:
     src: /etc/trust-dns/server.toml
     dest: /etc/trust-dns/server.toml.backup
-    remote_src: yes
+    remote_src: true
+    mode: "0644"
   when: dns_server == 'trust_dns'
 
 - name: Update OS packages
-  package:
+  ansible.builtin.package:
     name: '*'
-    state: latest
+    state: present
 
 - name: Restart DNS service
-  systemd:
-    name: "{{ 'dnscache' if dns_server == 'djbdns' else ('trust-dns' if dns_server == 'trust_dns' else (bind_service if dns_server == 'bind' else 'service_for_other')) }}"
+  ansible.builtin.systemd:
+    name: "{{ maintenance_dns_service_name }}"
     state: restarted
   when: dns_server in ['bind', 'djbdns', 'trust_dns']
 
 - name: Rotate logs
-  command: logrotate -f /etc/logrotate.conf
+  ansible.builtin.command: logrotate -f /etc/logrotate.conf
+  changed_when: false
   when: ansible_os_family == 'Debian'
 
 - name: Health check - test DNS resolution
-  command: dig @localhost www.opennic.org
-  register: dns_check
-  failed_when: dns_check.rc != 0
+  ansible.builtin.command: dig @localhost www.opennic.org
+  register: maintenance_dns_check
+  changed_when: false
+  failed_when: maintenance_dns_check.rc != 0
   when: dns_server in ['bind', 'djbdns', 'trust_dns']
 
 - name: Display DNS check result
-  debug:
-    msg: "DNS health check: {{ 'PASSED' if dns_check.rc == 0 else 'FAILED' }}"
-# tasks file for maintenance
+  ansible.builtin.debug:
+    msg: "DNS health check: {{ 'PASSED' if maintenance_dns_check.rc == 0 else 'FAILED' }}"
+#  tasks file for maintenance

@@ -1,6 +1,6 @@
-#SPDX-License-Identifier: Apache-2.0
-- name: restart dnscache
-  systemd:
+# SPDX-License-Identifier: Apache-2.0
+- name: Restart dnscache
+  ansible.builtin.systemd:
     name: dnscache
     state: restarted
-# handlers file for djbdns
+#  handlers file for djbdns

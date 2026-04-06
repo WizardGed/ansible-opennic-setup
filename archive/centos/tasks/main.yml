@@ -1,32 +1,32 @@
 - name: Update all packages on system
-  yum:
+  ansible.builtin.yum:
     name: '*'
     state: latest
 - name: Install required dependency libsemanage-python
-  yum:
+  ansible.builtin.yum:
     name: libsemanage-python
     state: latest
   when: (ansible_distribution_major_version is version('7', '='))
 - name: Install required dependency python3-policycoreutils
-  dnf:
+  ansible.builtin.dnf:
     name: python3-policycoreutils
     state: latest
   when: (ansible_distribution_major_version is version('7', '>'))
 - name: Install bind (named)
-  yum:
+  ansible.builtin.yum:
     name: bind
     state: latest
 - name: Ensure firewalld is installed
-  yum:
+  ansible.builtin.yum:
     name: firewalld
     state: latest
 - name: Enable start and enable named
-  systemd:
+  ansible.builtin.systemd:
     name: named
     state: started
     enabled: yes
 - name: Enable and start firewalld
-  systemd:
+  ansible.builtin.systemd:
     name: firewalld
     state: started
     enabled: yes
@@ -41,11 +41,11 @@
     permanent: true
     state: enabled
 - name: Reload firewalld
-  systemd:
+  ansible.builtin.systemd:
     name: firewalld
     state: reloaded
 - name: Update the named.conf
-  copy:
+  ansible.builtin.copy:
     src: named.conf
     dest: /etc/named.conf
     backup: yes
@@ -53,7 +53,7 @@
     group: named
     mode: 0644
 - name: Install OpenNIC zones file
-  copy:
+  ansible.builtin.copy:
     src: named.conf.opennic
     dest: /var/named/named.conf.opennic
     backup: yes
@@ -71,6 +71,6 @@
     state: yes
     persistent: yes
 - name: Restart named
-  systemd:
+  ansible.builtin.systemd:
     name: named
     state: restarted

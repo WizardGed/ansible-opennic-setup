@@ -1,47 +1,47 @@
-#SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: Apache-2.0
 - name: Install djbdns
-  package:
+  ansible.builtin.package:
     name: djbdns
-    state: latest
+    state: present
   when: ansible_os_family == 'Debian'
 
 - name: Create dnslog user
-  user:
+  ansible.builtin.user:
     name: dnslog
-    system: yes
-    shell: /bin/false
+    system: true
+    shell: /bin/bash
     home: /etc/dnscache
   when: ansible_os_family == 'Debian'
 
 - name: Configure dnscache
-  command: dnscache-conf dnscache dnslog /etc/dnscache
+  ansible.builtin.command: dnscache-conf dnscache dnslog /etc/dnscache
   args:
     creates: /etc/dnscache
   when: ansible_os_family == 'Debian'
 
 - name: Create root servers directory
-  file:
+  ansible.builtin.file:
     path: /etc/dnscache/root/servers
     state: directory
     owner: dnscache
     group: dnslog
-    mode: 0755
+    mode: "0755"
   when: ansible_os_family == 'Debian'
 
 - name: Configure OpenNIC root servers
-  template:
+  ansible.builtin.template:
     src: servers.j2
     dest: /etc/dnscache/root/servers/@
     owner: dnscache
     group: dnslog
-    mode: 0644
+    mode: "0644"
   notify: restart dnscache
   when: ansible_os_family == 'Debian'
 
 - name: Enable and start dnscache
-  systemd:
+  ansible.builtin.systemd:
     name: dnscache
     state: started
-    enabled: yes
+    enabled: true
   when: ansible_os_family == 'Debian'
-# tasks file for djbdns
+#  tasks file for djbdns

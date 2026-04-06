@@ -1,10 +1,10 @@
-#SPDX-License-Identifier: Apache-2.0
-- name: restart trust_dns
-  systemd:
+# SPDX-License-Identifier: Apache-2.0
+- name: Restart trust_dns
+  ansible.builtin.systemd:
     name: trust-dns
     state: restarted
 
-- name: reload systemd
-  systemd:
-    daemon_reload: yes
-# handlers file for trust_dns
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+#  handlers file for trust_dns

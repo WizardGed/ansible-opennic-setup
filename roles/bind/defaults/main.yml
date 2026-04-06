@@ -1,4 +1,4 @@
-#SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: Apache-2.0
 ---
 bind_package: "{{ 'bind9' if ansible_os_family == 'Debian' else 'bind' }}"
 bind_service: "{{ 'bind9' if ansible_os_family == 'Debian' else 'named' }}"
@@ -8,7 +8,7 @@ bind_config_dir: "{{ '/etc/bind' if ansible_os_family == 'Debian' else '/var/nam
 bind_main_config: "{{ '/etc/bind/named.conf.options' if ansible_os_family == 'Debian' else '/etc/named.conf' }}"
 bind_opennic_config: "{{ '/etc/bind/named.conf.default-zones' if ansible_os_family == 'Debian' else '/var/named/named.conf.opennic' }}"
 
-# OpenNIC master NS servers (update as needed)
+#  OpenNIC master NS servers (update as needed)
 bind_opennic_masters:
   - 161.97.219.84
   - 2001:470:4212:10:0:100:53:10
@@ -24,11 +24,11 @@ bind_opennic_masters:
   - 144.76.103.143
   - 2a01:4f8:192:43a5::2
 
-# DNSSEC settings
+#  DNSSEC settings
 bind_dnssec_validation: auto
 bind_dnssec_enable: true
 
-# Advanced features
+#  Advanced features
 bind_enable_doh: false
 bind_enable_dot: false
 bind_enable_dnssec_signing: false
@@ -36,14 +36,14 @@ bind_enable_rate_limiting: false
 bind_enable_query_logging: false
 bind_minimal_logging: false
 
-# DoT settings
+#  DoT settings
 bind_dot_port: 853
 bind_dot_certificate: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
 bind_dot_key: "/etc/ssl/private/ssl-cert-snakeoil.key"
 
-# Rate limiting
+#  Rate limiting
 bind_rate_limit_requests: 10
 bind_rate_limit_window: 5
 
-# Logging
+#  Logging
 bind_log_file: "/var/log/named/queries.log"

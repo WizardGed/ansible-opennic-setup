@@ -1,6 +1,5 @@
-#SPDX-License-Identifier: Apache-2.0
-- name: restart bind
-  systemd:
+# SPDX-License-Identifier: Apache-2.0
+- name: Restart bind
+  ansible.builtin.systemd:
     name: "{{ bind_service }}"
     state: restarted
-# handlers file for bind

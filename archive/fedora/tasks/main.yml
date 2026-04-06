@@ -1,36 +1,36 @@
 - name: Update all packages on system
-  dnf:
+  ansible.builtin.dnf:
     name: '*'
     state: latest
 - name: Install required dependency python3-libsemanage
-  dnf:
+  ansible.builtin.dnf:
     name: python3-libsemanage
     state: latest
   when: (ansible_distribution_major_version is version(FEDORA_VERSIONS|max, '<=')) and (ansible_distribution_major_version is version('31', '>='))
 - name: Install required dependency libsemanage-python
-  dnf:
+  ansible.builtin.dnf:
     name: libsemanage-python
     state: latest
   when: (ansible_distribution_major_version is version(FEDORA_VERSIONS|min, '>=')) and (ansible_distribution_major_version is version('30', '<='))
 - name: Install required dependency python3-firewall
-  dnf:
+  ansible.builtin.dnf:
     name: python3-firewall
     state: latest
 - name: Install bind (named)
-  dnf:
+  ansible.builtin.dnf:
     name: bind
     state: latest
 - name: Ensure firewalld is installed
-  dnf:
+  ansible.builtin.dnf:
     name: firewalld
     state: latest
 - name: Enable start and enable named
-  systemd:
+  ansible.builtin.systemd:
     name: named
     state: started
     enabled: yes
 - name: Enable and start firewalld
-  systemd:
+  ansible.builtin.systemd:
     name: firewalld
     state: started
     enabled: yes
@@ -45,11 +45,11 @@
     permanent: true
     state: enabled
 - name: Reload firewalld
-  systemd:
+  ansible.builtin.systemd:
     name: firewalld
     state: reloaded
 - name: Update the named.conf
-  copy:
+  ansible.builtin.copy:
     src: named.conf
     dest: /etc/named.conf
     backup: yes
@@ -57,7 +57,7 @@
     group: named
     mode: 0644
 - name: Install OpenNIC zones file
-  copy:
+  ansible.builtin.copy:
     src: named.conf.opennic
     dest: /var/named/named.conf.opennic
     backup: yes
@@ -75,6 +75,6 @@
     state: yes
     persistent: yes
 - name: Restart named
-  systemd:
+  ansible.builtin.systemd:
     name: named
     state: restarted

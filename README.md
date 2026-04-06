@@ -26,11 +26,11 @@ This Ansible playbook automates the setup of an OpenNIC Tier 2 DNS resolver on v
 
 ### Modern DNS Features (configurable)
 - DNSSEC validation
-- DNS-over-HTTPS (DoH) - planned
-- DNS-over-TLS (DoT) - planned
+- DNS-over-HTTPS (DoH) - not implemented
+- DNS-over-TLS (DoT) - supported for BIND and Trust-DNS
 - DNSSEC signing - planned
-- Rate limiting - planned
-- Query logging - planned
+- Rate limiting - supported for BIND
+- Query logging - supported for BIND
 
 ### Maintenance
 - Zone file updates

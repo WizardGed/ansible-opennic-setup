@@ -1,56 +1,56 @@
-#SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: Apache-2.0
 - name: Update all packages on system
-  package:
+  ansible.builtin.package:
     name: '*'
-    state: latest
+    state: present
 
 - name: Install basic packages for production readiness
-  package:
+  ansible.builtin.package:
     name:
       - chrony
       - logrotate
       - firewalld
       - python3-firewall
-    state: latest
+    state: present
 
 - name: Install SELinux dependencies
-  package:
+  ansible.builtin.package:
     name: python3-libsemanage
-    state: latest
+    state: present
   when: ansible_distribution_major_version | int >= 8
 
 - name: Install SELinux dependencies (older versions)
-  package:
+  ansible.builtin.package:
     name: libsemanage-python
-    state: latest
+    state: present
   when: ansible_distribution_major_version | int < 8
 
 - name: Enable and start chrony
-  systemd:
+  ansible.builtin.systemd:
     name: chronyd
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Enable and start firewalld
-  systemd:
+  ansible.builtin.systemd:
     name: firewalld
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Update firewalld to allow DNS TCP requests
-  firewalld:
+  ansible.posix.firewalld:
     port: 53/tcp
     permanent: true
     state: enabled
 
 - name: Update firewalld to allow DNS UDP requests
-  firewalld:
+  ansible.posix.firewalld:
     port: 53/udp
     permanent: true
     state: enabled
 
 - name: Reload firewalld
-  systemd:
+  ansible.builtin.systemd:
     name: firewalld
     state: reloaded
-# tasks file for rhel
+#  tasks file for rhel

@@ -1,7 +1,7 @@
-#SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: Apache-2.0
 ---
-# Trust-DNS defaults
-enable_doh: false
-enable_dot: false
-dot_port: 853
-minimal_logging: false
+#  Trust-DNS defaults
+trust_dns_enable_doh: false
+trust_dns_enable_dot: false
+trust_dns_dot_port: 853
+trust_dns_minimal_logging: false
