@@ -1,2 +1,2 @@
 ---
-UBUNTU_VERSIONS: ["18"]
+ubuntu_versions: ["18"]

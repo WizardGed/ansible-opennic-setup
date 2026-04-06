@@ -6,17 +6,18 @@
       ansible.builtin.service:
         name: "{{ 'bind9' if ansible_os_family == 'Debian' else 'named' }}"
         state: started
-      register: service_status
+      register: bind_service_status
 
     - name: Assert service is running
       ansible.builtin.assert:
-        that: service_status.state == 'started'
+        that: bind_service_status.state == 'started'
 
     - name: Check DNS resolution
       ansible.builtin.command: dig @localhost www.opennic.org
-      register: dig_result
-      failed_when: dig_result.rc != 0
+      register: bind_dig_result
+      failed_when: bind_dig_result.rc != 0
+      changed_when: false
 
     - name: Assert DNS works
       ansible.builtin.assert:
-        that: dig_result.rc == 0
+        that: bind_dig_result.rc == 0

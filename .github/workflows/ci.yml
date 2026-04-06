@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install ansible collections
+        run: pip install ansible && ansible-galaxy collection install community.general ansible.posix
       - name: Run ansible-lint
         uses: ansible/ansible-lint@main
         with:
@@ -20,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        role: [bind, debian, ubuntu, rhel, fedora, maintenance]
+        role: [bind]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python

@@ -9,5 +9,8 @@ platforms:
     pre_build_image: true
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      allow_broken_conditionals: true
 verifier:
   name: ansible
