@@ -1,0 +1,37 @@
+#SPDX-License-Identifier: MIT-0
+- name: Backup BIND configs
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}.backup"
+    remote_src: yes
+  loop:
+    - src: "{{ bind_main_config }}"
+      dest: "{{ bind_main_config }}"
+    - src: "{{ bind_opennic_config }}"
+      dest: "{{ bind_opennic_config }}"
+  when: dns_server == 'bind'
+
+- name: Update OS packages
+  package:
+    name: '*'
+    state: latest
+
+- name: Restart DNS service
+  systemd:
+    name: "{{ bind_service if dns_server == 'bind' else 'service_for_other' }}"
+    state: restarted
+  when: dns_server == 'bind'
+
+- name: Rotate logs
+  command: logrotate -f /etc/logrotate.conf
+  when: ansible_os_family == 'Debian'
+
+- name: Health check - test DNS resolution
+  command: dig @localhost www.opennic.org
+  register: dns_check
+  failed_when: dns_check.rc != 0
+
+- name: Display DNS check result
+  debug:
+    msg: "DNS health check: {{ 'PASSED' if dns_check.rc == 0 else 'FAILED' }}"
+# tasks file for maintenance
