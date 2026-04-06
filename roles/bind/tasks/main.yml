@@ -1,0 +1,62 @@
+#SPDX-License-Identifier: MIT-0
+- name: Install BIND
+  package:
+    name: "{{ bind_package }}"
+    state: latest
+
+- name: Enable and start BIND service
+  systemd:
+    name: "{{ bind_service }}"
+    state: started
+    enabled: yes
+
+- name: Create BIND config directory if needed
+  file:
+    path: "{{ bind_config_dir }}"
+    state: directory
+    owner: "{{ bind_user }}"
+    group: "{{ bind_group }}"
+    mode: 0755
+
+- name: Deploy BIND main config (Debian)
+  template:
+    src: named.conf.debian.j2
+    dest: "{{ bind_main_config }}"
+    backup: yes
+    owner: "{{ bind_user }}"
+    group: "{{ bind_group }}"
+    mode: 0644
+  when: ansible_os_family == 'Debian'
+  notify: restart bind
+
+- name: Deploy BIND main config (RedHat)
+  template:
+    src: named.conf.redhat.j2
+    dest: "{{ bind_main_config }}"
+    backup: yes
+    owner: "{{ bind_user }}"
+    group: "{{ bind_group }}"
+    mode: 0644
+  when: ansible_os_family == 'RedHat'
+  notify: restart bind
+
+- name: Deploy OpenNIC zones config
+  template:
+    src: named.conf.opennic.j2
+    dest: "{{ bind_opennic_config }}"
+    backup: yes
+    owner: "{{ bind_user }}"
+    group: "{{ bind_group }}"
+    mode: 0644
+  notify: restart bind
+
+- name: Set SELinux booleans for BIND (RedHat family)
+  seboolean:
+    name: "{{ item }}"
+    state: yes
+    persistent: yes
+  loop:
+    - named_tcp_bind_http_port
+    - named_write_master_zones
+  when: ansible_os_family == 'RedHat'
+# tasks file for bind
