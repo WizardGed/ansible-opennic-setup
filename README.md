@@ -48,8 +48,9 @@ This Ansible playbook automates the setup of an OpenNIC Tier 2 DNS resolver on v
 | DNSSEC Validation | ✅ | ❌ | ❌ | ❌ |
 | DoH | ❌ | ❌ | ❌ | ❌ |
 | DoT | ✅ | ❌ | ❌ | ✅ |
-| Rate Limiting | ✅ | ❌ | ❌ | ❌ |
+| Rate Limiting | ✅ | ✅ | ❌ | ❌ |
 | Query Logging | ✅ | ❌ | ❌ | ❌ |
+| Minimal Logging | ✅ | ✅ | ✅ | ✅ |
 | Maintenance Tasks | ✅ | ✅ | ✅ | ✅ |
 
 ## Quick Start
@@ -109,12 +110,13 @@ enable_rate_limiting: true
 rate_limit_requests: 10  # requests per second
 rate_limit_window: 5     # seconds
 
-# Query logging
+# Logging
 enable_query_logging: true
 log_file: "/var/log/named/queries.log"
-```
 
-**Note:** DNS-over-HTTPS (DoH) requires additional setup (nginx/haproxy proxy) and is not currently automated.
+# Minimal/no logging (for privacy/legal requirements)
+minimal_logging: true  # Disables all logging except errors
+```
 
 ## Maintenance
 

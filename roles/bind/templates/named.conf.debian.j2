@@ -35,4 +35,9 @@ logging {
 	};
 	category queries { query_log; };
 };
+{% elif minimal_logging %}
+logging {
+	category default { null; };
+	category general { null; };
+};
 {% endif %}

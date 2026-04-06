@@ -4,3 +4,4 @@
 enable_doh: false
 enable_dot: false
 dot_port: 853
+minimal_logging: false

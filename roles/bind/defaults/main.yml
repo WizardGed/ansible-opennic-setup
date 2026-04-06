@@ -34,6 +34,7 @@ enable_dot: false
 enable_dnssec_signing: false
 enable_rate_limiting: false
 enable_query_logging: false
+minimal_logging: false
 
 # DoT settings
 dot_port: 853
