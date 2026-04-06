@@ -44,11 +44,11 @@ This Ansible playbook automates the setup of an OpenNIC Tier 2 DNS resolver on v
 
 | Feature | BIND | djbdns | Untangle | Trust-DNS |
 |---------|------|--------|----------|-----------|
-| Basic Setup | ✅ | ❌ | ❌ | ❌ |
+| Basic Setup | ✅ | ✅ (Debian) | ❌ | ❌ |
 | DNSSEC Validation | ✅ | ❌ | ❌ | ❌ |
 | DoH | ❌ | ❌ | ❌ | ❌ |
 | DoT | ❌ | ❌ | ❌ | ❌ |
-| Maintenance Tasks | ✅ | ❌ | ❌ | ❌ |
+| Maintenance Tasks | ✅ | ✅ | ❌ | ❌ |
 
 ## Quick Start
 

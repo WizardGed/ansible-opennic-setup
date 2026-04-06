@@ -1,0 +1,47 @@
+#SPDX-License-Identifier: MIT-0
+- name: Install djbdns
+  package:
+    name: djbdns
+    state: latest
+  when: ansible_os_family == 'Debian'
+
+- name: Create dnslog user
+  user:
+    name: dnslog
+    system: yes
+    shell: /bin/false
+    home: /etc/dnscache
+  when: ansible_os_family == 'Debian'
+
+- name: Configure dnscache
+  command: dnscache-conf dnscache dnslog /etc/dnscache
+  args:
+    creates: /etc/dnscache
+  when: ansible_os_family == 'Debian'
+
+- name: Create root servers directory
+  file:
+    path: /etc/dnscache/root/servers
+    state: directory
+    owner: dnscache
+    group: dnslog
+    mode: 0755
+  when: ansible_os_family == 'Debian'
+
+- name: Configure OpenNIC root servers
+  template:
+    src: servers.j2
+    dest: /etc/dnscache/root/servers/@
+    owner: dnscache
+    group: dnslog
+    mode: 0644
+  notify: restart dnscache
+  when: ansible_os_family == 'Debian'
+
+- name: Enable and start dnscache
+  systemd:
+    name: dnscache
+    state: started
+    enabled: yes
+  when: ansible_os_family == 'Debian'
+# tasks file for djbdns

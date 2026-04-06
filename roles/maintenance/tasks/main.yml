@@ -11,6 +11,13 @@
       dest: "{{ bind_opennic_config }}"
   when: dns_server == 'bind'
 
+- name: Backup djbdns configs
+  copy:
+    src: /etc/dnscache/root/servers/@
+    dest: /etc/dnscache/root/servers/@.backup
+    remote_src: yes
+  when: dns_server == 'djbdns'
+
 - name: Update OS packages
   package:
     name: '*'
@@ -18,9 +25,9 @@
 
 - name: Restart DNS service
   systemd:
-    name: "{{ bind_service if dns_server == 'bind' else 'service_for_other' }}"
+    name: "{{ 'dnscache' if dns_server == 'djbdns' else (bind_service if dns_server == 'bind' else 'service_for_other') }}"
     state: restarted
-  when: dns_server == 'bind'
+  when: dns_server in ['bind', 'djbdns']
 
 - name: Rotate logs
   command: logrotate -f /etc/logrotate.conf
