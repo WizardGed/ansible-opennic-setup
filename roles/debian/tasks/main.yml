@@ -1,0 +1,50 @@
+#SPDX-License-Identifier: MIT-0
+- name: Update all packages on system
+  apt:
+    name: '*'
+    state: latest
+    force_apt_get: yes
+    update_cache: yes
+
+- name: Install basic packages for production readiness
+  apt:
+    name:
+      - ntp
+      - logrotate
+      - ufw
+    state: latest
+    force_apt_get: yes
+
+- name: Enable and start NTP
+  systemd:
+    name: ntp
+    state: started
+    enabled: yes
+
+- name: Enable and start ufw
+  systemd:
+    name: ufw
+    state: started
+    enabled: yes
+
+- name: Ensure SSH is allowed
+  ufw:
+    rule: allow
+    name: OpenSSH
+
+- name: Update ufw to allow DNS TCP requests
+  ufw:
+    rule: allow
+    port: '53'
+    proto: tcp
+
+- name: Update ufw to allow DNS UDP requests
+  ufw:
+    rule: allow
+    port: '53'
+    proto: udp
+
+- name: Reload ufw
+  ufw:
+    state: reloaded
+# tasks file for debian
