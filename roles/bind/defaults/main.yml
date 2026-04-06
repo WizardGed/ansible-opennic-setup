@@ -28,9 +28,22 @@ opennic_masters:
 dnssec_validation: auto
 dnssec_enable: true
 
-# Features
+# Advanced features
 enable_doh: false
 enable_dot: false
 enable_dnssec_signing: false
 enable_rate_limiting: false
 enable_query_logging: false
+
+# DoT settings
+dot_port: 853
+dot_certificate: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+dot_key: "/etc/ssl/private/ssl-cert-snakeoil.key"
+
+# Rate limiting
+rate_limit_requests: 10
+rate_limit_window: 5
+
+# Logging
+log_queries: false
+log_file: "/var/log/named/queries.log"

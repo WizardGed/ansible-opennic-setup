@@ -1,3 +1,6 @@
 #SPDX-License-Identifier: MIT-0
 ---
-# defaults file for trust_dns
+# Trust-DNS defaults
+enable_doh: false
+enable_dot: false
+dot_port: 853

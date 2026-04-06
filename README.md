@@ -47,7 +47,9 @@ This Ansible playbook automates the setup of an OpenNIC Tier 2 DNS resolver on v
 | Basic Setup | ✅ | ✅ (Debian) | ✅ | ⚠️ (Experimental) |
 | DNSSEC Validation | ✅ | ❌ | ❌ | ❌ |
 | DoH | ❌ | ❌ | ❌ | ❌ |
-| DoT | ❌ | ❌ | ❌ | ❌ |
+| DoT | ✅ | ❌ | ❌ | ✅ |
+| Rate Limiting | ✅ | ❌ | ❌ | ❌ |
+| Query Logging | ✅ | ❌ | ❌ | ❌ |
 | Maintenance Tasks | ✅ | ✅ | ✅ | ✅ |
 
 ## Quick Start
@@ -91,18 +93,28 @@ opennic_masters:
   # ... more IPs
 ```
 
-### Custom Inventory
+### Advanced Features
 
-Create a `hosts` file in the project directory:
+Set these variables to enable advanced DNS features (BIND only):
 
-```ini
-[opennic]
-server1 ansible_host=192.168.1.10
+```yaml
+# DNS-over-TLS (DoT)
+enable_dot: true
+dot_port: 853
+dot_certificate: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+dot_key: "/etc/ssl/private/ssl-cert-snakeoil.key"
 
-[opennic:vars]
-dns_server=bind
-enable_dnssec_signing=true
+# Rate limiting
+enable_rate_limiting: true
+rate_limit_requests: 10  # requests per second
+rate_limit_window: 5     # seconds
+
+# Query logging
+enable_query_logging: true
+log_file: "/var/log/named/queries.log"
 ```
+
+**Note:** DNS-over-HTTPS (DoH) requires additional setup (nginx/haproxy proxy) and is not currently automated.
 
 ## Maintenance
 

@@ -10,4 +10,29 @@ options {
 
 	recursion yes;
 	version "[hidden]";
+	dnssec-validation {{ dnssec_validation }};
+{% if enable_dot %}
+	listen-on tls port {{ dot_port }} { any; };
+	listen-on-v6 tls port {{ dot_port }} { any; };
+	tls local-tls {
+		key-file "{{ dot_key }}";
+		cert-file "{{ dot_certificate }}";
+	};
+{% endif %}
+{% if enable_rate_limiting %}
+	rate-limit {
+		responses-per-second {{ rate_limit_requests }};
+		window {{ rate_limit_window }};
+	};
+{% endif %}
 };
+{% if enable_query_logging %}
+logging {
+	channel query_log {
+		file "{{ log_file }}";
+		severity info;
+		print-time yes;
+	};
+	category queries { query_log; };
+};
+{% endif %}
