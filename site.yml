@@ -1,0 +1,19 @@
+- name: First time setup of OpenNIC on server
+  hosts: opennic
+  remote_user: root # update if using become
+  ## Use become by uncommenting the lines below to elevate once reaching the server
+  # become: yes
+  # become_user: root
+  # become_method: sudo
+
+  vars:
+    dns_server: bind  # Options: bind, djbdns, untangle, trust_dns
+
+  # Roles for different OS and DNS server
+  roles:
+  - { role: debian, when: ansible_distribution == "Debian" }
+  - { role: ubuntu, when: ansible_distribution == "Ubuntu" }
+  - { role: rhel, when: ansible_os_family == "RedHat" }
+  - { role: fedora, when: ansible_distribution == "Fedora" }
+  - { role: "{{ dns_server }}" }
+  - { role: maintenance }

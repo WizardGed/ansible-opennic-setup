@@ -1,0 +1,5 @@
+[opennic]
+localhost ansible_connection=local
+
+[opennic:vars]
+dns_server=bind
