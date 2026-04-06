@@ -33,7 +33,7 @@ options {
 	recursion yes;
 	version "[hidden]";
 
-	dnssec-validation {{ dnssec_validation }};
+	dnssec-validation {{ bind_dnssec_validation }};
 
 	/* Path to ISC DLV key */
 	bindkeys-file "/etc/named.iscdlv.key";
@@ -42,32 +42,32 @@ options {
 
 	pid-file "/run/named/named.pid";
 	session-keyfile "/run/named/session.key";
-{% if enable_dot %}
-	listen-on tls port {{ dot_port }} { any; };
-	listen-on-v6 tls port {{ dot_port }} { any; };
+{% if bind_enable_dot %}
+	listen-on tls port {{ bind_dot_port }} { any; };
+	listen-on-v6 tls port {{ bind_dot_port }} { any; };
 	tls local-tls {
-		key-file "{{ dot_key }}";
-		cert-file "{{ dot_certificate }}";
+		key-file "{{ bind_dot_key }}";
+		cert-file "{{ bind_dot_certificate }}";
 	};
 {% endif %}
-{% if enable_rate_limiting %}
+{% if bind_enable_rate_limiting %}
 	rate-limit {
-		responses-per-second {{ rate_limit_requests }};
-		window {{ rate_limit_window }};
+		responses-per-second {{ bind_rate_limit_requests }};
+		window {{ bind_rate_limit_window }};
 	};
 {% endif %}
 };
 
-{% if enable_query_logging %}
+{% if bind_enable_query_logging %}
 logging {
 	channel query_log {
-		file "{{ log_file }}";
+		file "{{ bind_log_file }}";
 		severity info;
 		print-time yes;
 	};
 	category queries { query_log; };
 };
-{% elif minimal_logging %}
+{% elif bind_minimal_logging %}
 logging {
 	category default { null; };
 	category general { null; };

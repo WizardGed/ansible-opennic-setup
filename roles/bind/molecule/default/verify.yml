@@ -1,0 +1,22 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check BIND service
+      service:
+        name: "{{ 'bind9' if ansible_os_family == 'Debian' else 'named' }}"
+        state: started
+      register: service_status
+
+    - name: Assert service is running
+      assert:
+        that: service_status.state == 'started'
+
+    - name: Check DNS resolution
+      command: dig @localhost www.opennic.org
+      register: dig_result
+      failed_when: dig_result.rc != 0
+
+    - name: Assert DNS works
+      assert:
+        that: dig_result.rc == 0

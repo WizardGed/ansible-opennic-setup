@@ -1,5 +1,5 @@
 masters opennicNS {
-{% for ip in opennic_masters %}
+{% for ip in bind_opennic_masters %}
 	{{ ip }};
 {% endfor %}
 };

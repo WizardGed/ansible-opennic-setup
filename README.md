@@ -78,14 +78,14 @@ Set variables in your playbook or inventory:
 dns_server: bind  # Options: bind, djbdns, untangle, trust_dns
 
 # DNSSEC settings
-dnssec_validation: auto
+bind_dnssec_validation: auto
 
 # Enable features
-enable_doh: false
-enable_dot: false
-enable_dnssec_signing: false
-enable_rate_limiting: false
-enable_query_logging: false
+bind_enable_doh: false
+bind_enable_dot: false
+bind_enable_dnssec_signing: false
+bind_enable_rate_limiting: false
+bind_enable_query_logging: false
 
 # OpenNIC master servers (update as needed)
 opennic_masters:
@@ -100,22 +100,22 @@ Set these variables to enable advanced DNS features (BIND only):
 
 ```yaml
 # DNS-over-TLS (DoT)
-enable_dot: true
-dot_port: 853
-dot_certificate: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
-dot_key: "/etc/ssl/private/ssl-cert-snakeoil.key"
+bind_enable_dot: true
+bind_dot_port: 853
+bind_dot_certificate: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+bind_dot_key: "/etc/ssl/private/ssl-cert-snakeoil.key"
 
 # Rate limiting
-enable_rate_limiting: true
-rate_limit_requests: 10  # requests per second
-rate_limit_window: 5     # seconds
+bind_enable_rate_limiting: true
+bind_rate_limit_requests: 10  # requests per second
+bind_rate_limit_window: 5     # seconds
 
 # Logging
-enable_query_logging: true
-log_file: "/var/log/named/queries.log"
+bind_enable_query_logging: true
+bind_log_file: "/var/log/named/queries.log"
 
 # Minimal/no logging (for privacy/legal requirements)
-minimal_logging: true  # Disables all logging except errors
+bind_minimal_logging: true  # Disables all logging except errors
 ```
 
 ## Maintenance
