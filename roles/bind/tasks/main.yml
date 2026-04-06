@@ -1,4 +1,4 @@
-#SPDX-License-Identifier: MIT-0
+#SPDX-License-Identifier: Apache-2.0
 - name: Install BIND
   package:
     name: "{{ bind_package }}"

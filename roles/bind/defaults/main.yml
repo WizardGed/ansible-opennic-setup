@@ -1,4 +1,4 @@
-#SPDX-License-Identifier: MIT-0
+#SPDX-License-Identifier: Apache-2.0
 ---
 bind_package: "{{ 'bind9' if ansible_os_family == 'Debian' else 'bind' }}"
 bind_service: "{{ 'bind9' if ansible_os_family == 'Debian' else 'named' }}"
