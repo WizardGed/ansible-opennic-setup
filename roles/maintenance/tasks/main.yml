@@ -18,6 +18,13 @@
     remote_src: yes
   when: dns_server == 'djbdns'
 
+- name: Backup trust-dns configs
+  copy:
+    src: /etc/trust-dns/server.toml
+    dest: /etc/trust-dns/server.toml.backup
+    remote_src: yes
+  when: dns_server == 'trust_dns'
+
 - name: Update OS packages
   package:
     name: '*'
@@ -25,9 +32,9 @@
 
 - name: Restart DNS service
   systemd:
-    name: "{{ 'dnscache' if dns_server == 'djbdns' else (bind_service if dns_server == 'bind' else 'service_for_other') }}"
+    name: "{{ 'dnscache' if dns_server == 'djbdns' else ('trust-dns' if dns_server == 'trust_dns' else (bind_service if dns_server == 'bind' else 'service_for_other')) }}"
     state: restarted
-  when: dns_server in ['bind', 'djbdns']
+  when: dns_server in ['bind', 'djbdns', 'trust_dns']
 
 - name: Rotate logs
   command: logrotate -f /etc/logrotate.conf
@@ -37,6 +44,7 @@
   command: dig @localhost www.opennic.org
   register: dns_check
   failed_when: dns_check.rc != 0
+  when: dns_server in ['bind', 'djbdns', 'trust_dns']
 
 - name: Display DNS check result
   debug:

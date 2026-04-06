@@ -1,0 +1,12 @@
+[Unit]
+Description=Trust-DNS Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/root/.cargo/bin/trust-dns-server --config /etc/trust-dns/server.toml
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

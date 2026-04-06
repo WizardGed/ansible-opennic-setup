@@ -1,0 +1,19 @@
+[recursor]
+type = "resolver"
+
+[recursor.roots]
+. = [
+{% for ip in opennic_masters %}
+  "{{ ip }}",
+{% endfor %}
+]
+
+[[zones]]
+zone = "."
+zone_type = "Forward"
+stores = [{ type = "recursor", recursor = "recursor" }]
+
+[listen_addrs]
+addr = "0.0.0.0:53"
+proto = "udp"
+

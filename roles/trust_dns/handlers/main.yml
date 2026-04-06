@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: MIT-0
+- name: restart trust_dns
+  systemd:
+    name: trust-dns
+    state: restarted
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+# handlers file for trust_dns

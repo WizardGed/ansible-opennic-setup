@@ -1,0 +1,46 @@
+#SPDX-License-Identifier: MIT-0
+- name: Install Rust
+  shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  args:
+    creates: ~/.cargo/bin/rustc
+  when: ansible_os_family == 'Debian'
+
+- name: Add Rust to PATH
+  lineinfile:
+    path: ~/.bashrc
+    line: 'export PATH="$HOME/.cargo/bin:$PATH"'
+  when: ansible_os_family == 'Debian'
+
+- name: Install trust-dns-server
+  command: ~/.cargo/bin/cargo install trust-dns-server
+  args:
+    creates: ~/.cargo/bin/trust-dns-server
+  when: ansible_os_family == 'Debian'
+
+- name: Create trust-dns config directory
+  file:
+    path: /etc/trust-dns
+    state: directory
+    mode: 0755
+
+- name: Deploy trust-dns config
+  template:
+    src: server.toml.j2
+    dest: /etc/trust-dns/server.toml
+    mode: 0644
+  notify: restart trust_dns
+
+- name: Create systemd service file
+  template:
+    src: trust-dns.service.j2
+    dest: /etc/systemd/system/trust-dns.service
+    mode: 0644
+  notify: reload systemd
+
+- name: Enable and start trust-dns
+  systemd:
+    name: trust-dns
+    state: started
+    enabled: yes
+  when: ansible_os_family == 'Debian'
+# tasks file for trust_dns

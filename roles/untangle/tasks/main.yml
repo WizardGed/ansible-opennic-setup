@@ -1,0 +1,18 @@
+#SPDX-License-Identifier: MIT-0
+- name: Configure DNS resolvers for OpenNIC
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    mode: 0644
+  when: ansible_os_family == 'Debian'
+
+- name: Configure DNS resolvers for OpenNIC (RHEL)
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    mode: 0644
+  when: ansible_os_family == 'RedHat'
+
+# Note: For Untangle, this configures the system to use OpenNIC resolvers
+# In a full Untangle deployment, the DNS app should be configured to forward to these
+# tasks file for untangle
