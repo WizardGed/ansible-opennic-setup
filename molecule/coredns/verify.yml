@@ -1,0 +1,34 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check CoreDNS binary exists
+      ansible.builtin.stat:
+        path: /usr/local/bin/coredns
+      register: coredns_bin
+
+    - name: Assert CoreDNS binary was installed
+      ansible.builtin.assert:
+        that:
+          - coredns_bin.stat.exists
+
+    - name: Check Corefile exists
+      ansible.builtin.stat:
+        path: /etc/coredns/Corefile
+      register: corefile
+
+    - name: Assert Corefile was created
+      ansible.builtin.assert:
+        that:
+          - corefile.stat.exists
+
+    - name: Check OpenNIC resolvers in Corefile
+      ansible.builtin.command: grep 'forward' /etc/coredns/Corefile
+      register: grep_corefile
+      changed_when: false
+      failed_when: grep_corefile.rc != 0
+
+    - name: Assert at least one OpenNIC resolver present in Corefile
+      ansible.builtin.assert:
+        that:
+          - grep_corefile.stdout is search('161.97.219.84')

@@ -23,7 +23,6 @@ This Ansible playbook automates the setup of an OpenNIC Tier 2 DNS resolver on v
 
 - **BIND** (default) - ISC BIND DNS server, production-ready
 - **djbdns** - D.J. Bernstein's DNS server suite, lightweight
-- **Untangle** - Configures system DNS to use OpenNIC resolvers (for gateway/firewall setups)
 - **Trust-DNS** - Modern Rust-based DNS server, experimental/not recommended for production
 
 ## Features
@@ -52,7 +51,7 @@ This Ansible playbook automates the setup of an OpenNIC Tier 2 DNS resolver on v
 
 ## Feature Matrix
 
-| Feature | BIND | djbdns | Untangle | Trust-DNS |
+| Feature | BIND | djbdns | Trust-DNS |
 |---------|------|--------|----------|-----------|
 | Basic Setup | ✅ | ✅ (Debian) | ✅ | ⚠️ (Experimental) |
 | DNSSEC Validation | ✅ | ❌ | ❌ | ❌ |
@@ -85,7 +84,7 @@ Set variables in your playbook or inventory:
 
 ```yaml
 # Choose DNS server
-dns_server: bind  # Options: bind, djbdns, untangle, trust_dns
+dns_server: bind  # Options: bind, djbdns, trust_dns
 
 # DNSSEC settings
 bind_dnssec_validation: auto

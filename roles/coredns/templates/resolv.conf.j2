@@ -1,0 +1,4 @@
+# OpenNIC resolvers configured by Ansible
+{% for ip in coredns_opennic_masters[:3] %}
+nameserver {{ ip }}
+{% endfor %}

@@ -1,0 +1,49 @@
+# Ensure /etc/coredns exists
+- name: Create CoreDNS config directory
+  ansible.builtin.file:
+    path: /etc/coredns
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: molecule_yml is not defined or ansible_facts["os_family"] in ["Debian", "RedHat"]
+# Debug: Show virtualization_type for troubleshooting
+# SPDX-License-Identifier: Apache-2.0
+
+
+- name: Configure DNS resolvers for OpenNIC (Debian)
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    mode: "0644"
+  when:
+    - ansible_facts["os_family"] == 'Debian'
+    - molecule_yml is not defined
+
+
+- name: Configure DNS resolvers for OpenNIC (RedHat)
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    mode: "0644"
+  when:
+    - ansible_facts["os_family"] == 'RedHat'
+    - molecule_yml is not defined
+
+#  Note: For CoreDNS, this configures the system to use OpenNIC resolvers
+#  In a full CoreDNS deployment, the Corefile should be configured to forward to these
+#  tasks file for coredns
+
+- name: Deploy CoreDNS Corefile (Debian)
+  ansible.builtin.template:
+    src: Corefile.j2
+    dest: /etc/coredns/Corefile
+    mode: "0644"
+  when: ansible_facts["os_family"] == 'Debian'
+
+- name: Deploy CoreDNS Corefile (RedHat)
+  ansible.builtin.template:
+    src: Corefile.j2
+    dest: /etc/coredns/Corefile
+    mode: "0644"
+  when: ansible_facts["os_family"] == 'RedHat'

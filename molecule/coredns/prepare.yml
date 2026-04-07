@@ -1,0 +1,28 @@
+---
+# Prepare playbook for CoreDNS Molecule scenario
+# Add any prerequisite installation or setup here if needed
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Update apt cache (Debian)
+      ansible.builtin.apt:
+        update_cache: true
+      when: ansible_facts["os_family"] == 'Debian'
+
+    - name: Install prerequisites for CoreDNS (Debian)
+      ansible.builtin.package:
+        name:
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+      when: ansible_facts["os_family"] == 'Debian'
+
+    - name: Install CoreDNS (Debian)
+      ansible.builtin.shell: |
+        curl -Lo /usr/local/bin/coredns https://github.com/coredns/coredns/releases/latest/download/coredns-linux-amd64
+        chmod +x /usr/local/bin/coredns
+      args:
+        creates: /usr/local/bin/coredns
+      when: ansible_facts["os_family"] == 'Debian'
