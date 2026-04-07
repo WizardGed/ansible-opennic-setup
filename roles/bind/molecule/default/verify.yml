@@ -2,15 +2,18 @@
 - name: Verify
   hosts: all
   tasks:
+
     - name: Check BIND service
       ansible.builtin.service:
         name: "{{ 'bind9' if ansible_os_family == 'Debian' else 'named' }}"
         state: started
       register: bind_service_status
+      when: ansible_service_mgr == 'systemd'
 
     - name: Assert service is running
       ansible.builtin.assert:
         that: bind_service_status.state == 'started'
+      when: ansible_service_mgr == 'systemd'
 
     - name: Check DNS resolution
       ansible.builtin.command: dig @localhost www.opennic.org
