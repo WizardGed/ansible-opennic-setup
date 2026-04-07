@@ -2,17 +2,11 @@
 - name: Verify
   hosts: all
   tasks:
-    - name: Ensure dig is installed (Debian/Ubuntu)
-      ansible.builtin.apt:
-        name: dnsutils
+    - name: Ensure dig is installed
+      ansible.builtin.package:
+        name: "{{ 'dnsutils' if ansible_facts['os_family'] == 'Debian' else 'bind-utils' }}"
         state: present
-      when: ansible_facts['os_family'] == 'Debian'
-
-    - name: Ensure dig is installed (RedHat family)
-      ansible.builtin.yum:
-        name: bind-utils
-        state: present
-      when: ansible_facts['os_family'] == 'RedHat'
+      when: ansible_facts['os_family'] in ['Debian', 'RedHat']
 
     - name: Check if systemd is running
       ansible.builtin.stat:
