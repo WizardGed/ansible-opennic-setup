@@ -52,9 +52,9 @@ jobs:
           ANSIBLE_CONFIG: ${{ github.workspace }}/ansible.cfg
           ANSIBLE_REMOTE_TMP: /tmp/.ansible/tmp
         run: |
-          molecule create -s ${{ matrix.scenario }}
-          molecule converge -s ${{ matrix.scenario }}
-          molecule idempotence -s ${{ matrix.scenario }}
-          molecule verify -s ${{ matrix.scenario }}
-          molecule destroy -s ${{ matrix.scenario }}
+          molecule create
+          molecule converge
+          molecule idempotence
+          molecule verify
+          molecule destroy
         # Uses collections.yml for dependency management and ansible_facts for OS detection
