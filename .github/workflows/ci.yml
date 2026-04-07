@@ -46,9 +46,12 @@ jobs:
           pip install molecule molecule-podman ansible
           ansible-galaxy collection install -r collections.yml
       - name: Run Molecule tests
+        working-directory: ${{ matrix.path }}
+        env:
+          ANSIBLE_ROLES_PATH: ${{ github.workspace }}/roles
+          ANSIBLE_CONFIG: ${{ github.workspace }}/ansible.cfg
+          ANSIBLE_REMOTE_TMP: /tmp/.ansible/tmp
         run: |
-          export ANSIBLE_ROLES_PATH="$GITHUB_WORKSPACE/roles"
-          cd ${{ matrix.path }}
           molecule create -s ${{ matrix.scenario }}
           molecule converge -s ${{ matrix.scenario }}
           molecule idempotence -s ${{ matrix.scenario }}
