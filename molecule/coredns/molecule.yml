@@ -10,6 +10,8 @@ provisioner:
   log: true
   env:
     ANSIBLE_ROLES_PATH: ../../roles
+    ANSIBLE_CONFIG: ../../ansible.cfg
+    ANSIBLE_REMOTE_TMP: /tmp/.ansible/tmp
 verifier:
   name: ansible
 scenario:
