@@ -34,7 +34,13 @@
       register: bind_dig_result
       failed_when: bind_dig_result.rc != 0
       changed_when: false
+      when:
+        - ansible_service_mgr == 'systemd'
+        - bind_systemd_running.stat.exists
 
     - name: Assert DNS works
       ansible.builtin.assert:
         that: bind_dig_result.rc == 0
+      when:
+        - ansible_service_mgr == 'systemd'
+        - bind_systemd_running.stat.exists
