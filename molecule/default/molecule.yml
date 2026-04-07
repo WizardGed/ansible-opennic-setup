@@ -1,0 +1,19 @@
+---
+dependency:
+  name: galaxy
+  options:
+    role-file: ../../requirements.yml
+    requirements-file: ../../collections.yml
+driver:
+  name: podman
+platforms:
+  - name: instance
+    image: geerlingguy/docker-ubuntu2204-ansible:latest
+    pre_build_image: true
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      allow_broken_conditionals: true
+verifier:
+  name: ansible

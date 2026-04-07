@@ -11,8 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install ansible collections
-        run: pip install ansible && ansible-galaxy collection install community.general ansible.posix
+      - name: Install ansible and collections
+        run: |
+          pip install ansible
+          ansible-galaxy collection install -r collections.yml
       - name: Run ansible-lint
         uses: ansible/ansible-lint@main
         with:
@@ -33,7 +35,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install molecule molecule-podman ansible
+          ansible-galaxy collection install -r collections.yml
       - name: Run Molecule tests
         run: |
+          export ANSIBLE_ROLES_PATH="$GITHUB_WORKSPACE/roles"
           cd roles/${{ matrix.role }}
           molecule test
+        # Uses collections.yml for dependency management and ansible_facts for OS detection

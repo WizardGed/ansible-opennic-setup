@@ -1,3 +1,13 @@
+# Dependency Management & Facts Usage
+
+This project uses a `collections.yml` and `requirements.yml` to manage Ansible Galaxy collections. Always install dependencies before running playbooks or tests:
+
+```sh
+ansible-galaxy collection install -r collections.yml
+# or
+ansible-galaxy collection install -r requirements.yml
+```
+
 # OpenNIC Setup with Ansible
 
 This Ansible playbook automates the setup of an OpenNIC Tier 2 DNS resolver on various Linux distributions. It supports multiple DNS server implementations and provides production-ready configurations.
