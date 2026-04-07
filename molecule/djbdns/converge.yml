@@ -1,0 +1,32 @@
+---
+- name: Converge
+  hosts: all
+  pre_tasks:
+    - name: Ensure contrib and non-free are enabled in /etc/apt/sources.list if present
+      ansible.builtin.replace:
+        path: /etc/apt/sources.list
+        regexp: '^(deb .*) main(.*)$'
+        replace: '\1 main contrib non-free\2'
+      become: true
+      failed_when: false
+
+    - name: Get list of sources.list.d/*.list files
+      ansible.builtin.shell: ls -1 /etc/apt/sources.list.d/*.list 2>/dev/null || true
+      register: sources_list_files
+      changed_when: false
+
+    - name: Ensure contrib and non-free are enabled in all sources.list.d/*.list files
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: '^(deb .*) main(.*)$'
+        replace: '\1 main contrib non-free\2'
+      loop: "{{ sources_list_files.stdout_lines }}"
+      become: true
+      failed_when: false
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+      become: true
+  roles:
+    - djbdns

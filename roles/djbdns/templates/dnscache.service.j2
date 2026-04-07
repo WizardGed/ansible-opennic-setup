@@ -1,0 +1,32 @@
+[Unit]
+Description=dnscache DNS cache (djbdns) — /etc/dnscache
+After=network.target nss-lookup.target
+Wants=dnslog.service
+
+[Service]
+Type=simple
+User=dnscache
+Group=dnscache
+WorkingDirectory=/etc/dnscache
+EnvironmentFile=/etc/default/dnscache
+ExecStart=/bin/sh -e /etc/dnscache/run
+Restart=on-failure
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+# Hardening
+ProtectSystem=full
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectProc=invisible
+ProtectKernelModules=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallFilter=@default @network-io
+CapabilityBoundingSet=CAP_CHOWN CAP_DAC_OVERRIDE CAP_SETUID CAP_SETGID
+
+[Install]
+WantedBy=multi-user.target

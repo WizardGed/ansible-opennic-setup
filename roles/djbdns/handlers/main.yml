@@ -3,4 +3,5 @@
   ansible.builtin.systemd:
     name: dnscache
     state: restarted
+  when: molecule_yml is not defined
 #  handlers file for djbdns

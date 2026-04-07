@@ -1,0 +1,21 @@
+---
+dependency:
+  name: galaxy
+  options:
+    role-file: ../../requirements.yml
+    requirements-file: ../../collections.yml
+driver:
+  name: podman
+platforms:
+  - name: instance
+    image: geerlingguy/docker-debian12-ansible:latest
+    pre_build_image: true
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      allow_broken_conditionals: true
+  env:
+    ANSIBLE_ROLES_PATH: ../../roles
+verifier:
+  name: ansible
