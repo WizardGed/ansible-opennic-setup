@@ -56,7 +56,7 @@
   notify: Restart bind
 
 - name: Set SELinux booleans for BIND (RedHat family)
-  ansible.posix.setsebool:
+  ansible.posix.seboolean:
     name: "{{ item }}"
     state: true
     persistent: true
