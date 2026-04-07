@@ -27,7 +27,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        role: [bind, coredns]
+        include:
+          - role: coredns
+            path: molecule/coredns
+            scenario: coredns
+          - role: bind
+            path: roles/bind/molecule/default
+            scenario: default
     steps:
       - uses: actions/checkout@v6
       - name: Set up Python
@@ -42,5 +48,10 @@ jobs:
       - name: Run Molecule tests
         run: |
           export ANSIBLE_ROLES_PATH="$GITHUB_WORKSPACE/roles"
-          molecule test -s ${{ matrix.role }}
+          cd ${{ matrix.path }}
+          molecule create -s ${{ matrix.scenario }}
+          molecule converge -s ${{ matrix.scenario }}
+          molecule idempotence -s ${{ matrix.scenario }}
+          molecule verify -s ${{ matrix.scenario }}
+          molecule destroy -s ${{ matrix.scenario }}
         # Uses collections.yml for dependency management and ansible_facts for OS detection

@@ -14,5 +14,9 @@ provisioner:
   config_options:
     defaults:
       allow_broken_conditionals: true
+  env:
+    ANSIBLE_ROLES_PATH: ../../../../roles
+    ANSIBLE_CONFIG: ../../../../ansible.cfg
+    ANSIBLE_REMOTE_TMP: /tmp/.ansible/tmp
 verifier:
   name: ansible
