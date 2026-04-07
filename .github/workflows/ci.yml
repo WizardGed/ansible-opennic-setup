@@ -42,6 +42,5 @@ jobs:
       - name: Run Molecule tests
         run: |
           export ANSIBLE_ROLES_PATH="$GITHUB_WORKSPACE/roles"
-          cd roles/${{ matrix.role }}
-          molecule test
+          molecule test -s ${{ matrix.role }}
         # Uses collections.yml for dependency management and ansible_facts for OS detection
