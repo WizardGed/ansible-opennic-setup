@@ -2,11 +2,22 @@
 - name: Verify
   hosts: all
   tasks:
+    - name: Ensure dig is installed (Debian/Ubuntu)
+      ansible.builtin.apt:
+        name: dnsutils
+        state: present
+      when: ansible_facts['os_family'] == 'Debian'
+
+    - name: Ensure dig is installed (RedHat family)
+      ansible.builtin.yum:
+        name: bind-utils
+        state: present
+      when: ansible_facts['os_family'] == 'RedHat'
 
     - name: Check if systemd is running
-      stat:
+      ansible.builtin.stat:
         path: /run/systemd/system
-      register: systemd_running
+      register: bind_systemd_running
 
     - name: Check BIND service
       ansible.builtin.service:
@@ -15,14 +26,14 @@
       register: bind_service_status
       when:
         - ansible_service_mgr == 'systemd'
-        - systemd_running.stat.exists
+        - bind_systemd_running.stat.exists
 
     - name: Assert service is running
       ansible.builtin.assert:
         that: bind_service_status.state == 'started'
       when:
         - ansible_service_mgr == 'systemd'
-        - systemd_running.stat.exists
+        - bind_systemd_running.stat.exists
 
     - name: Check DNS resolution
       ansible.builtin.command: dig @localhost www.opennic.org

@@ -1,7 +1,6 @@
-
 - name: Update apt cache (Debian/Ubuntu)
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
   when: ansible_facts["os_family"] == 'Debian'
 
 - name: Install BIND
@@ -57,7 +56,7 @@
   notify: restart bind
 
 - name: Set SELinux booleans for BIND (RedHat family)
-  seboolean:
+  ansible.posix.seboolean:
     name: "{{ item }}"
     state: true
     persistent: true
