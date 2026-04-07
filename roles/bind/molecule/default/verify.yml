@@ -3,17 +3,26 @@
   hosts: all
   tasks:
 
+    - name: Check if systemd is running
+      stat:
+        path: /run/systemd/system
+      register: systemd_running
+
     - name: Check BIND service
       ansible.builtin.service:
         name: "{{ 'bind9' if ansible_os_family == 'Debian' else 'named' }}"
         state: started
       register: bind_service_status
-      when: ansible_service_mgr == 'systemd'
+      when:
+        - ansible_service_mgr == 'systemd'
+        - systemd_running.stat.exists
 
     - name: Assert service is running
       ansible.builtin.assert:
         that: bind_service_status.state == 'started'
-      when: ansible_service_mgr == 'systemd'
+      when:
+        - ansible_service_mgr == 'systemd'
+        - systemd_running.stat.exists
 
     - name: Check DNS resolution
       ansible.builtin.command: dig @localhost www.opennic.org
