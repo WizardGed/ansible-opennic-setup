@@ -32,7 +32,7 @@
     group: "{{ bind_group }}"
     mode: "0644"
   when: ansible_facts["os_family"] == 'Debian'
-  notify: restart bind
+  notify: Restart bind
 
 - name: Deploy BIND main config (RedHat)
   ansible.builtin.template:
@@ -43,7 +43,7 @@
     group: "{{ bind_group }}"
     mode: "0644"
   when: ansible_facts["os_family"] == 'RedHat'
-  notify: restart bind
+  notify: Restart bind
 
 - name: Deploy OpenNIC zones config
   ansible.builtin.template:
@@ -53,7 +53,7 @@
     owner: "{{ bind_user }}"
     group: "{{ bind_group }}"
     mode: "0644"
-  notify: restart bind
+  notify: Restart bind
 
 - name: Set SELinux booleans for BIND (RedHat family)
   ansible.posix.seboolean:
