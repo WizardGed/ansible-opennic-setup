@@ -1,7 +1,4 @@
-
 name: CI
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 on:
   push:
@@ -13,7 +10,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - name: Install ansible and collections
         run: |
           pip install ansible
@@ -26,18 +23,19 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include:
           - role: coredns
-            path: molecule/coredns
+            working_dir: .
             scenario: coredns
           - role: bind
-            path: roles/bind/molecule/default
+            working_dir: roles/bind
             scenario: default
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install dependencies
@@ -46,15 +44,10 @@ jobs:
           pip install molecule molecule-podman ansible
           ansible-galaxy collection install -r collections.yml
       - name: Run Molecule tests
-        working-directory: ${{ github.workspace }}/${{ matrix.path }}
+        working-directory: ${{ github.workspace }}/${{ matrix.working_dir }}
         env:
           ANSIBLE_ROLES_PATH: ${{ github.workspace }}/roles
           ANSIBLE_CONFIG: ${{ github.workspace }}/ansible.cfg
           ANSIBLE_REMOTE_TMP: /tmp/.ansible/tmp
         run: |
-          molecule create
-          molecule converge
-          molecule idempotence
-          molecule verify
-          molecule destroy
-        # Uses collections.yml for dependency management and ansible_facts for OS detection
+          molecule test -s ${{ matrix.scenario }}
