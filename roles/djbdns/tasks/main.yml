@@ -1,9 +1,29 @@
 # SPDX-License-Identifier: Apache-2.0
-- name: Install djbdns
+- name: Install djbdns packages
   ansible.builtin.package:
-    name: djbdns
+    name:
+      - dnscache
+      - djbdns-conf
+      - djbdns-utils
     state: present
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts["os_family"] == 'Debian' and molecule_yml is not defined
+
+
+- name: Ensure dnscache group exists
+  ansible.builtin.group:
+    name: dnscache
+    system: true
+  when: ansible_facts["os_family"] == 'Debian' and molecule_yml is not defined
+
+- name: Ensure dnscache user exists
+  ansible.builtin.user:
+    name: dnscache
+    system: true
+    shell: /usr/sbin/nologin
+    home: /etc/dnscache
+    group: dnscache
+    create_home: false
+  when: ansible_facts["os_family"] == 'Debian' and molecule_yml is not defined
 
 - name: Create dnslog user
   ansible.builtin.user:
@@ -11,13 +31,22 @@
     system: true
     shell: /bin/bash
     home: /etc/dnscache
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts["os_family"] == 'Debian' and molecule_yml is not defined
 
 - name: Configure dnscache
   ansible.builtin.command: dnscache-conf dnscache dnslog /etc/dnscache
   args:
     creates: /etc/dnscache
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts["os_family"] == 'Debian' and molecule_yml is not defined
+
+
+- name: Set ownership of /etc/dnscache
+  ansible.builtin.file:
+    path: /etc/dnscache
+    owner: dnscache
+    group: dnscache
+    recurse: true
+  when: ansible_facts["os_family"] == 'Debian' and molecule_yml is not defined
 
 - name: Create root servers directory
   ansible.builtin.file:
@@ -26,7 +55,7 @@
     owner: dnscache
     group: dnslog
     mode: "0755"
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts["os_family"] == 'Debian' and molecule_yml is not defined
 
 - name: Configure OpenNIC root servers
   ansible.builtin.template:
@@ -35,13 +64,28 @@
     owner: dnscache
     group: dnslog
     mode: "0644"
-  notify: restart dnscache
-  when: ansible_os_family == 'Debian'
+  notify: Restart dnscache
+  when: ansible_facts["os_family"] == 'Debian' and molecule_yml is not defined
+
+
+- name: Deploy dnscache systemd unit
+  ansible.builtin.template:
+    src: dnscache.service.j2
+    dest: /etc/systemd/system/dnscache.service
+    owner: root
+    group: root
+    mode: '0644'
+  when: ansible_facts["os_family"] == 'Debian' and molecule_yml is not defined
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: ansible_facts["os_family"] == 'Debian' and molecule_yml is not defined
 
 - name: Enable and start dnscache
   ansible.builtin.systemd:
     name: dnscache
     state: started
     enabled: true
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts["os_family"] == 'Debian' and molecule_yml is not defined
 #  tasks file for djbdns

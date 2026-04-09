@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 ---
-bind_package: "{{ 'bind9' if ansible_os_family == 'Debian' else 'bind' }}"
-bind_service: "{{ 'bind9' if ansible_os_family == 'Debian' else 'named' }}"
-bind_user: "{{ 'bind' if ansible_os_family == 'Debian' else 'named' }}"
-bind_group: "{{ 'bind' if ansible_os_family == 'Debian' else 'named' }}"
-bind_config_dir: "{{ '/etc/bind' if ansible_os_family == 'Debian' else '/var/named' }}"
-bind_main_config: "{{ '/etc/bind/named.conf.options' if ansible_os_family == 'Debian' else '/etc/named.conf' }}"
-bind_opennic_config: "{{ '/etc/bind/named.conf.default-zones' if ansible_os_family == 'Debian' else '/var/named/named.conf.opennic' }}"
+bind_package: "{{ 'bind9' if ansible_facts['os_family'] == 'Debian' else 'bind' }}"
+bind_service: "{{ 'bind9' if ansible_facts['os_family'] == 'Debian' else 'named' }}"
+bind_user: "{{ 'bind' if ansible_facts['os_family'] == 'Debian' else 'named' }}"
+bind_group: "{{ 'bind' if ansible_facts['os_family'] == 'Debian' else 'named' }}"
+bind_config_dir: "{{ '/etc/bind' if ansible_facts['os_family'] == 'Debian' else '/var/named' }}"
+bind_main_config: "{{ '/etc/bind/named.conf.options' if ansible_facts['os_family'] == 'Debian' else '/etc/named.conf' }}"
+bind_opennic_config: "{{ '/etc/bind/named.conf.default-zones' if ansible_facts['os_family'] == 'Debian' else '/var/named/named.conf.opennic' }}"
 
 #  OpenNIC master NS servers (update as needed)
 bind_opennic_masters:

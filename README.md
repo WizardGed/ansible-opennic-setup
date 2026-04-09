@@ -1,3 +1,13 @@
+# Dependency Management & Facts Usage
+
+This project uses a `collections.yml` and `requirements.yml` to manage Ansible Galaxy collections. Always install dependencies before running playbooks or tests:
+
+```sh
+ansible-galaxy collection install -r collections.yml
+# or
+ansible-galaxy collection install -r requirements.yml
+```
+
 # OpenNIC Setup with Ansible
 
 This Ansible playbook automates the setup of an OpenNIC Tier 2 DNS resolver on various Linux distributions. It supports multiple DNS server implementations and provides production-ready configurations.
@@ -13,7 +23,6 @@ This Ansible playbook automates the setup of an OpenNIC Tier 2 DNS resolver on v
 
 - **BIND** (default) - ISC BIND DNS server, production-ready
 - **djbdns** - D.J. Bernstein's DNS server suite, lightweight
-- **Untangle** - Configures system DNS to use OpenNIC resolvers (for gateway/firewall setups)
 - **Trust-DNS** - Modern Rust-based DNS server, experimental/not recommended for production
 
 ## Features
@@ -42,14 +51,14 @@ This Ansible playbook automates the setup of an OpenNIC Tier 2 DNS resolver on v
 
 ## Feature Matrix
 
-| Feature | BIND | djbdns | Untangle | Trust-DNS |
+| Feature | BIND | djbdns | CoreDNS | Trust-DNS |
 |---------|------|--------|----------|-----------|
 | Basic Setup | ✅ | ✅ (Debian) | ✅ | ⚠️ (Experimental) |
-| DNSSEC Validation | ✅ | ❌ | ❌ | ❌ |
+| DNSSEC Validation | ✅ | ❌ | ✅ | ❌ |
 | DoH | ❌ | ❌ | ❌ | ❌ |
-| DoT | ✅ | ❌ | ❌ | ✅ |
-| Rate Limiting | ✅ | ✅ | ❌ | ❌ |
-| Query Logging | ✅ | ❌ | ❌ | ❌ |
+| DoT | ✅ | ❌ | ✅ | ✅ |
+| Rate Limiting | ✅ | ✅ | ✅ | ❌ |
+| Query Logging | ✅ | ❌ | ✅ | ❌ |
 | Minimal Logging | ✅ | ✅ | ✅ | ✅ |
 | Maintenance Tasks | ✅ | ✅ | ✅ | ✅ |
 
@@ -75,7 +84,7 @@ Set variables in your playbook or inventory:
 
 ```yaml
 # Choose DNS server
-dns_server: bind  # Options: bind, djbdns, untangle, trust_dns
+dns_server: bind  # Options: bind, djbdns, trust_dns
 
 # DNSSEC settings
 bind_dnssec_validation: auto

@@ -1,4 +1,9 @@
-# SPDX-License-Identifier: Apache-2.0
+- name: Update apt cache (Debian/Ubuntu)
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_facts["os_family"] == 'Debian'
+
 - name: Install BIND
   ansible.builtin.package:
     name: "{{ bind_package }}"
@@ -9,6 +14,7 @@
     name: "{{ bind_service }}"
     state: started
     enabled: true
+  when: molecule_yml is not defined
 
 - name: Create BIND config directory if needed
   ansible.builtin.file:
@@ -26,8 +32,8 @@
     owner: "{{ bind_user }}"
     group: "{{ bind_group }}"
     mode: "0644"
-  when: ansible_os_family == 'Debian'
-  notify: restart bind
+  when: ansible_facts["os_family"] == 'Debian'
+  notify: Restart bind
 
 - name: Deploy BIND main config (RedHat)
   ansible.builtin.template:
@@ -37,8 +43,8 @@
     owner: "{{ bind_user }}"
     group: "{{ bind_group }}"
     mode: "0644"
-  when: ansible_os_family == 'RedHat'
-  notify: restart bind
+  when: ansible_facts["os_family"] == 'RedHat'
+  notify: Restart bind
 
 - name: Deploy OpenNIC zones config
   ansible.builtin.template:
@@ -48,15 +54,15 @@
     owner: "{{ bind_user }}"
     group: "{{ bind_group }}"
     mode: "0644"
-  notify: restart bind
+  notify: Restart bind
 
 - name: Set SELinux booleans for BIND (RedHat family)
-  seboolean:
+  ansible.posix.seboolean:
     name: "{{ item }}"
     state: true
     persistent: true
   loop:
     - named_tcp_bind_http_port
     - named_write_master_zones
-  when: ansible_os_family == 'RedHat'
+  when: ansible_facts["os_family"] == 'RedHat'
 #  tasks file for bind

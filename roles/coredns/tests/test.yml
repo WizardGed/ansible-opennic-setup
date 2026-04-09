@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ---
-- hosts: localhost
+- name: Test coredns role
+  hosts: localhost
   remote_user: root
   roles:
-    - untangle
+    - coredns

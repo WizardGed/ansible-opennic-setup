@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ---
-- hosts: localhost
+- name: Test rhel role
+  hosts: localhost
   remote_user: root
   roles:
     - rhel

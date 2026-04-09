@@ -1,0 +1,20 @@
+---
+driver:
+  name: podman
+platforms:
+  - name: instance
+    image: geerlingguy/docker-debian12-ansible:latest
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+provisioner:
+  name: ansible
+  log: true
+  env:
+    ANSIBLE_ROLES_PATH: ../../roles
+    ANSIBLE_CONFIG: ../../ansible.cfg
+    ANSIBLE_REMOTE_TMP: /tmp/.ansible/tmp
+verifier:
+  name: ansible
+scenario:
+  name: coredns

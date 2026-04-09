@@ -1,0 +1,5 @@
+# Empty side_effect playbook for Molecule
+---
+- hosts: all
+  gather_facts: false
+  tasks: []

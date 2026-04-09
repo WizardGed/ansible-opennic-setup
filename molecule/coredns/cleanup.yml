@@ -1,0 +1,5 @@
+# Empty cleanup playbook for Molecule
+---
+- hosts: all
+  gather_facts: false
+  tasks: []
