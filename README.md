@@ -51,14 +51,14 @@ This Ansible playbook automates the setup of an OpenNIC Tier 2 DNS resolver on v
 
 ## Feature Matrix
 
-| Feature | BIND | djbdns | Trust-DNS |
+| Feature | BIND | djbdns | CoreDNS | Trust-DNS |
 |---------|------|--------|----------|-----------|
 | Basic Setup | ✅ | ✅ (Debian) | ✅ | ⚠️ (Experimental) |
-| DNSSEC Validation | ✅ | ❌ | ❌ | ❌ |
+| DNSSEC Validation | ✅ | ❌ | ✅ | ❌ |
 | DoH | ❌ | ❌ | ❌ | ❌ |
-| DoT | ✅ | ❌ | ❌ | ✅ |
-| Rate Limiting | ✅ | ✅ | ❌ | ❌ |
-| Query Logging | ✅ | ❌ | ❌ | ❌ |
+| DoT | ✅ | ❌ | ✅ | ✅ |
+| Rate Limiting | ✅ | ✅ | ✅ | ❌ |
+| Query Logging | ✅ | ❌ | ✅ | ❌ |
 | Minimal Logging | ✅ | ✅ | ✅ | ✅ |
 | Maintenance Tasks | ✅ | ✅ | ✅ | ✅ |
 
